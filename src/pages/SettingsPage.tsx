@@ -178,7 +178,6 @@ export default function SettingsPage() {
         <h2 className="font-headline font-bold text-[#012d1d] dark:text-white mb-3">Sobre o Sistema</h2>
         <div className="space-y-2 text-xs text-[#414844] dark:text-white/50">
           <p><strong className="text-[#012d1d] dark:text-white">Sistema:</strong> Cuiudos Sócios v1.0</p>
-          <p><strong className="text-[#012d1d] dark:text-white">Finalidade:</strong> Gestão Avícola para Conselho de Sócios</p>
         </div>
       </div>
     </div>
