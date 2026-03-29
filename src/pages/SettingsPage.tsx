@@ -179,7 +179,6 @@ export default function SettingsPage() {
         <div className="space-y-2 text-xs text-[#414844] dark:text-white/50">
           <p><strong className="text-[#012d1d] dark:text-white">Sistema:</strong> Cuiudos Sócios v1.0</p>
           <p><strong className="text-[#012d1d] dark:text-white">Finalidade:</strong> Gestão Avícola para Conselho de Sócios</p>
-          <p><strong className="text-[#012d1d] dark:text-white">Armazenamento:</strong> Dados salvos localmente no navegador</p>
         </div>
       </div>
     </div>
