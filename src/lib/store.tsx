@@ -107,8 +107,16 @@ const defaultGoals: Goal = {
   realizedROI: 0,
 };
 
+function getInitialDarkMode(): boolean {
+  try {
+    const stored = localStorage.getItem('cuiudos_dark_mode');
+    if (stored !== null) return stored === 'true';
+  } catch {}
+  return false;
+}
+
 const defaultSettings: AppSettings = {
-  darkMode: false,
+  darkMode: getInitialDarkMode(),
   language: 'pt-BR',
 };
 
@@ -325,7 +333,11 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   };
 
   const toggleDarkMode = () => {
-    setSettings(prev => ({ ...prev, darkMode: !prev.darkMode }));
+    setSettings(prev => {
+      const newDark = !prev.darkMode;
+      try { localStorage.setItem('cuiudos_dark_mode', String(newDark)); } catch {}
+      return { ...prev, darkMode: newDark };
+    });
   };
 
   const updateSettings = (data: Partial<AppSettings>) => {

@@ -177,7 +177,7 @@ export default function SettingsPage() {
       <div className="bg-white dark:bg-white/5 rounded-2xl shadow-sm p-6 border border-transparent dark:border-white/10">
         <h2 className="font-headline font-bold text-[#012d1d] dark:text-white mb-3">Sobre o Sistema</h2>
         <div className="space-y-2 text-xs text-[#414844] dark:text-white/50">
-          <p><strong className="text-[#012d1d] dark:text-white">Sistema:</strong> Cuiudos Sócios v1.0</p>
+          <p><strong className="text-[#012d1d] dark:text-white">Sistema:</strong> Cuiudos Sócios v2.0</p>
         </div>
       </div>
     </div>

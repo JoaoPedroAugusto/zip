@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Users, Mail, Phone, Calendar, DollarSign, Search, ChevronDown, Shield, PieChart as PieChartIcon, Eye, EyeOff } from 'lucide-react';
+import {
+  Users, Mail, Phone, Calendar, DollarSign, Search, ChevronDown,
+  Shield, PieChart as PieChartIcon, Eye, EyeOff, CheckCircle2,
+  Clock, AlertTriangle, UserCheck, Crown,
+} from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { useStore } from '../lib/store';
 import { formatCurrency, formatDate, cn, getStatusColor, getInitials } from '../lib/utils';
@@ -17,9 +21,7 @@ export default function PartnersPage() {
   const [selectedPartner, setSelectedPartner] = useState<string | null>(null);
   
   const isAdmin = user?.role === 'admin';
-  const [showPrivateData, setShowPrivateData] = useState(!isAdmin); // Start visible for everyone if not admin, but for admin, allow toggling it? 
-  // Wait, if it's admin, we start with showPrivateData = false (masked mode), or true?
-  // Let's explicitly manage it.
+  const [showPrivateData, setShowPrivateData] = useState(!isAdmin);
   const adminAlwaysShows = user?.role === 'admin' ? false : false;
 
   const totalCapital = partners.reduce((a, p) => a + p.totalInvested, 0);
@@ -34,7 +36,8 @@ export default function PartnersPage() {
   const equityData = partners.filter(p => p.totalInvested > 0).map(p => ({
     name: p.name.split(' ')[0],
     value: p.totalInvested,
-  }));  const paidCount = partners.filter(p => p.paymentStatus === 'PAGO').length;
+  }));
+  const paidCount = partners.filter(p => p.paymentStatus === 'PAGO').length;
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -60,19 +63,19 @@ export default function PartnersPage() {
 
       {/* Summary */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5">
+        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5 hover:shadow-md hover:-translate-y-0.5 transition-all">
           <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50 mb-2">Total de Sócios</p>
           <p className="text-2xl sm:text-3xl font-headline font-extrabold text-[#012d1d] dark:text-white">{partners.length}</p>
         </div>
-        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5">
+        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5 hover:shadow-md hover:-translate-y-0.5 transition-all">
           <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50 mb-2">Capital Total</p>
           <p className="text-lg sm:text-xl font-headline font-extrabold text-[#012d1d] dark:text-white">{formatCurrency(totalCapital)}</p>
         </div>
-        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5">
+        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5 hover:shadow-md hover:-translate-y-0.5 transition-all">
           <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50 mb-2">Valuation (1.8x)</p>
           <p className="text-lg sm:text-xl font-headline font-extrabold text-[#7b5800] dark:text-[#ffdea6]">{formatCurrency(valuation)}</p>
         </div>
-        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5">
+        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5 hover:shadow-md hover:-translate-y-0.5 transition-all">
           <p className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50 mb-2">Adimplência</p>
           <p className="text-lg sm:text-xl font-headline font-extrabold text-emerald-600">
             {partners.length > 0 ? `${((paidCount / partners.length) * 100).toFixed(0)}%` : 'N/A'}
@@ -87,13 +90,13 @@ export default function PartnersPage() {
             <div className="relative flex-1 min-w-[180px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#414844]/40" />
               <input type="text" placeholder="Buscar sócio..." value={search} onChange={e => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/10 border border-[#edeeed] dark:border-white/10 rounded-lg text-sm text-[#012d1d] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#012d1d]/20" />
+                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-white/10 border border-[#edeeed] dark:border-white/10 rounded-lg text-sm text-[#012d1d] dark:text-white focus:outline-none focus:ring-2 focus:ring-[#012d1d]/20 transition-all" />
             </div>
             <div className="flex gap-1 sm:gap-1.5 flex-wrap">
               {(['TODOS', 'PAGO', 'PENDENTE', 'ATRASADO'] as FilterType[]).map(f => (
                 <button key={f} onClick={() => setFilter(f)}
                   className={cn("px-2.5 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all",
-                    filter === f ? "bg-[#012d1d] text-white" : "bg-white dark:bg-white/10 text-[#414844] dark:text-white/60 border border-[#edeeed] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/15"
+                    filter === f ? "bg-[#012d1d] text-white shadow-sm" : "bg-white dark:bg-white/10 text-[#414844] dark:text-white/60 border border-[#edeeed] dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/15"
                   )}>
                   {f}
                 </button>
@@ -104,7 +107,9 @@ export default function PartnersPage() {
           {/* Partners */}
           {partners.length === 0 ? (
             <div className="text-center py-16 bg-white dark:bg-white/5 rounded-2xl border border-dashed border-[#edeeed] dark:border-white/10">
-              <div className="text-4xl mb-3">👥</div>
+              <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-[#012d1d] to-[#1b4332] rounded-2xl flex items-center justify-center shadow-lg">
+                <Users className="w-7 h-7 text-white" />
+              </div>
               <p className="text-[#414844] dark:text-white/50 text-sm">Nenhum sócio cadastrado ainda.</p>
               <p className="text-[#414844] dark:text-white/30 text-xs mt-1">Novos sócios aparecerão aqui ao se registrarem.</p>
             </div>
@@ -127,7 +132,7 @@ export default function PartnersPage() {
                         <div className="text-left">
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold text-[#012d1d] dark:text-white">{partner.name}</h3>
-                            {partner.role === 'admin' && <Shield className="w-3.5 h-3.5 text-[#7b5800]" />}
+                            {partner.role === 'admin' && <Crown className="w-3.5 h-3.5 text-[#7b5800]" />}
                             {isCurrentUser && <span className="text-[8px] bg-[#012d1d] text-white px-1.5 py-0.5 rounded-full font-bold">VOCÊ</span>}
                           </div>
                           <p className="text-xs text-[#414844] dark:text-white/50">
@@ -197,7 +202,7 @@ export default function PartnersPage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {equityData.length > 0 && (
-            <div className="bg-white dark:bg-white/5 rounded-2xl p-5 shadow-sm sticky top-24 border border-transparent dark:border-white/5">
+            <div className="bg-white dark:bg-white/5 rounded-2xl p-5 shadow-sm sticky top-24 border border-transparent dark:border-white/5 hover:shadow-md transition-all">
               <h3 className="font-headline font-bold text-[#012d1d] dark:text-white text-sm flex items-center gap-2 mb-4">
                 <PieChartIcon className="w-4 h-4" /> Distribuição de Patrimônio
               </h3>
@@ -208,7 +213,7 @@ export default function PartnersPage() {
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
                       {equityData.map((_, index) => (<Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />))}
                     </Pie>
-                    <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ borderRadius: '8px', border: 'none', fontSize: '11px' }} />
+                    <Tooltip formatter={(value: number) => formatCurrency(value)} contentStyle={{ borderRadius: '12px', border: 'none', fontSize: '11px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -226,21 +231,38 @@ export default function PartnersPage() {
             </div>
           )}
 
-          {/* Payment Summary */}
+          {/* Payment Summary — Modern Redesign */}
           <div className="bg-gradient-to-br from-[#012d1d] to-[#1b4332] rounded-2xl p-5 text-white shadow-lg">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-4">Resumo de Pagamentos</h3>
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/60 mb-4 flex items-center gap-1.5">
+              <UserCheck className="w-3.5 h-3.5" /> Resumo de Pagamentos
+            </h3>
             <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-white/70 text-xs">✅ Pagos</span>
-                <span className="font-bold">{partners.filter(p => p.paymentStatus === 'PAGO').length}</span>
+              <div className="flex justify-between items-center p-2.5 bg-white/5 rounded-xl hover:bg-white/10 transition-all">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  </div>
+                  <span className="text-white/80 text-xs font-medium">Pagos</span>
+                </div>
+                <span className="font-bold text-lg">{partners.filter(p => p.paymentStatus === 'PAGO').length}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-white/70 text-xs">⏳ Pendentes</span>
-                <span className="font-bold text-amber-300">{partners.filter(p => p.paymentStatus === 'PENDENTE').length}</span>
+              <div className="flex justify-between items-center p-2.5 bg-white/5 rounded-xl hover:bg-white/10 transition-all">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                    <Clock className="w-4 h-4 text-amber-400" />
+                  </div>
+                  <span className="text-white/80 text-xs font-medium">Pendentes</span>
+                </div>
+                <span className="font-bold text-lg text-amber-300">{partners.filter(p => p.paymentStatus === 'PENDENTE').length}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-white/70 text-xs">🚨 Atrasados</span>
-                <span className="font-bold text-red-300">{partners.filter(p => p.paymentStatus === 'ATRASADO').length}</span>
+              <div className="flex justify-between items-center p-2.5 bg-white/5 rounded-xl hover:bg-white/10 transition-all">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-red-500/20 flex items-center justify-center">
+                    <AlertTriangle className="w-4 h-4 text-red-400" />
+                  </div>
+                  <span className="text-white/80 text-xs font-medium">Atrasados</span>
+                </div>
+                <span className="font-bold text-lg text-red-300">{partners.filter(p => p.paymentStatus === 'ATRASADO').length}</span>
               </div>
             </div>
           </div>

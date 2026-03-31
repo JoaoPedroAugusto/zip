@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Tractor, BrainCircuit, Users, Settings, LogOut, Menu, X,
   ChevronRight, LayoutDashboard, Banknote, ShieldCheck, Bell,
+  Wallet, CreditCard, BarChart3, Bird, BellRing,
 } from 'lucide-react';
 import { useAuth } from './lib/auth';
 import { useStore } from './lib/store';
@@ -200,9 +201,19 @@ export default function App() {
                               )}
                             >
                               <div className="flex items-start gap-3">
-                                <span className="text-sm mt-0.5">
-                                  {n.type === 'investment' ? '💰' : n.type === 'payment' ? '💳' : n.type === 'market' ? '📊' : n.type === 'production' ? '🐔' : '🔔'}
-                                </span>
+                                <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5",
+                                  n.type === 'investment' ? "bg-amber-100 dark:bg-amber-900/20" :
+                                  n.type === 'payment' ? "bg-blue-100 dark:bg-blue-900/20" :
+                                  n.type === 'market' ? "bg-emerald-100 dark:bg-emerald-900/20" :
+                                  n.type === 'production' ? "bg-orange-100 dark:bg-orange-900/20" :
+                                  "bg-gray-100 dark:bg-white/10"
+                                )}>
+                                  {n.type === 'investment' ? <Wallet className="w-3.5 h-3.5 text-amber-600" /> :
+                                   n.type === 'payment' ? <CreditCard className="w-3.5 h-3.5 text-blue-600" /> :
+                                   n.type === 'market' ? <BarChart3 className="w-3.5 h-3.5 text-emerald-600" /> :
+                                   n.type === 'production' ? <Bird className="w-3.5 h-3.5 text-orange-600" /> :
+                                   <BellRing className="w-3.5 h-3.5 text-gray-500" />}
+                                </div>
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2">
                                     <p className="text-xs font-bold text-[#012d1d] dark:text-white">{n.title}</p>

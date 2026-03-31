@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import {
   BrainCircuit, TrendingUp, TrendingDown, Minus, Zap,
   RefreshCw, BarChart3, Newspaper, AlertTriangle, ChevronRight,
+  CircleDot, ArrowRight,
 } from 'lucide-react';
 import { useStore } from '../lib/store';
-import { cn, getStatusColor, getImpactIcon } from '../lib/utils';
+import { cn, getStatusColor } from '../lib/utils';
 
 const commodityData = [
   { name: 'Milho', price: 'R$ 68,50', unit: '/saca 60kg', change: '+2,3%', trend: 'up', source: 'CEPEA/Esalq' },
@@ -39,6 +40,15 @@ const marketNews = [
   { id: 'MA03', date: '2026-03-26', title: 'Exportação de frango cresce 8%', description: 'Demanda asiática puxa exportações. Preços internos podem subir 3-5%.', impact: 'POSITIVO', source: 'ABPA' },
 ];
 
+function getImpactIcon(impact: string) {
+  switch (impact) {
+    case 'POSITIVO': return <TrendingUp className="w-5 h-5 text-emerald-500" />;
+    case 'NEGATIVO': return <TrendingDown className="w-5 h-5 text-red-500" />;
+    case 'NEUTRO': return <ArrowRight className="w-5 h-5 text-gray-400" />;
+    default: return <BarChart3 className="w-5 h-5 text-[#414844]" />;
+  }
+}
+
 export default function MarketPage() {
   const { marketAlerts } = useStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -63,7 +73,7 @@ export default function MarketPage() {
         </div>
         <button
           onClick={handleRefresh}
-          className="flex items-center gap-2 bg-[#012d1d] text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:opacity-90 transition-all active:scale-95"
+          className="flex items-center gap-2 bg-[#012d1d] text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:opacity-90 transition-all active:scale-95 shadow-md"
         >
           <RefreshCw className={cn("w-4 h-4", isRefreshing && "animate-spin")} />
           Atualizar
@@ -78,7 +88,7 @@ export default function MarketPage() {
           const bgTrend = commodity.trend === 'up' ? 'bg-red-50 dark:bg-red-900/20' : commodity.trend === 'down' ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-gray-50 dark:bg-white/5';
 
           return (
-            <div key={commodity.name} className="bg-white dark:bg-white/5 p-4 rounded-xl shadow-sm hover:shadow-md transition-all animate-fade-in-up border border-transparent dark:border-white/5" style={{ animationDelay: `${i * 60}ms` }}>
+            <div key={commodity.name} className="bg-white dark:bg-white/5 p-4 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all animate-fade-in-up border border-transparent dark:border-white/5" style={{ animationDelay: `${i * 60}ms` }}>
               <p className="text-[9px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50 mb-2">{commodity.name}</p>
               <p className="text-lg font-headline font-extrabold text-[#012d1d] dark:text-white tracking-tight">{commodity.price}</p>
               <p className="text-[9px] text-[#414844] dark:text-white/40 mb-2">{commodity.unit}</p>
@@ -101,7 +111,7 @@ export default function MarketPage() {
             <div
               key={analysis.title}
               className={cn(
-                "rounded-2xl p-5 space-y-3 animate-fade-in-up",
+                "rounded-2xl p-5 space-y-3 animate-fade-in-up hover:shadow-md transition-all",
                 analysis.severity === 'warning' && "bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30",
                 analysis.severity === 'success' && "bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 dark:border-emerald-800/30",
                 analysis.severity === 'info' && "bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800/30",
@@ -128,7 +138,9 @@ export default function MarketPage() {
         <div className="space-y-3">
           {marketNews.map((alert, i) => (
             <div key={alert.id} className="bg-white dark:bg-white/5 rounded-xl p-5 shadow-sm hover:shadow-md transition-all flex items-start gap-4 group cursor-pointer border border-transparent dark:border-white/5 animate-fade-in-up" style={{ animationDelay: `${i * 80}ms` }}>
-              <div className="text-2xl shrink-0 mt-1">{getImpactIcon(alert.impact)}</div>
+              <div className="w-10 h-10 rounded-xl bg-[#f3f4f3] dark:bg-white/10 flex items-center justify-center shrink-0">
+                {getImpactIcon(alert.impact)}
+              </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
                   <h3 className="font-headline font-bold text-[#012d1d] dark:text-white">{alert.title}</h3>
@@ -147,20 +159,23 @@ export default function MarketPage() {
       </div>
 
       {/* n8n Automations */}
-      <div className="bg-gradient-to-br from-[#012d1d] to-[#1b4332] rounded-2xl p-5 sm:p-6 text-white">
+      <div className="bg-gradient-to-br from-[#012d1d] to-[#1b4332] rounded-2xl p-5 sm:p-6 text-white shadow-lg">
         <h3 className="font-headline font-bold text-lg mb-3 flex items-center gap-2">
           <Zap className="w-5 h-5 text-[#ffdea6]" /> Automações n8n Ativas
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           {[
-            { name: 'Busca de Preços CEPEA', desc: 'Web scraping do milho e soja no CEPEA/Esalq. Atualização às 18h.', status: '🟢 Ativo' },
-            { name: 'Alertas de Aporte', desc: 'Verifica pagamentos pendentes no dia 5 de cada mês. Lembrete via WhatsApp.', status: '🟢 Ativo' },
-            { name: 'Relatório Semanal IA', desc: 'Analisa gastos da semana e sugere otimizações de custo.', status: '🟢 Ativo' },
+            { name: 'Busca de Preços CEPEA', desc: 'Web scraping do milho e soja no CEPEA/Esalq. Atualização às 18h.', active: true },
+            { name: 'Alertas de Aporte', desc: 'Verifica pagamentos pendentes no dia 5 de cada mês. Lembrete via WhatsApp.', active: true },
+            { name: 'Relatório Semanal IA', desc: 'Analisa gastos da semana e sugere otimizações de custo.', active: true },
           ].map(item => (
-            <div key={item.name} className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
+            <div key={item.name} className="bg-white/10 rounded-xl p-4 backdrop-blur-sm hover:bg-white/15 transition-all">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-bold text-sm text-white">{item.name}</h4>
-                <span className="text-[10px]">{item.status}</span>
+                <div className="flex items-center gap-1.5 text-[10px]">
+                  <CircleDot className={cn("w-3 h-3", item.active ? "text-emerald-400" : "text-red-400")} />
+                  <span className="text-white/70">{item.active ? 'Ativo' : 'Inativo'}</span>
+                </div>
               </div>
               <p className="text-white/60 text-xs leading-relaxed">{item.desc}</p>
             </div>

@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Egg, Activity, CheckCircle2, Clock, ChevronDown, ChevronUp, Wheat, HeartPulse, Scale, Plus, X } from 'lucide-react';
+import {
+  Egg, Activity, CheckCircle2, Clock, ChevronDown, ChevronUp,
+  Wheat, HeartPulse, Scale, Plus, X, Bird, CalendarDays,
+} from 'lucide-react';
 import { useStore } from '../lib/store';
 import { useAuth } from '../lib/auth';
 import { formatCurrency, formatDate, cn, getStatusColor } from '../lib/utils';
@@ -38,7 +41,7 @@ export default function ProductionPage() {
       initialQuantity: qty,
       currentQuantity: qty,
       accumulatedMortality: 0,
-      averageWeight: 0.04, // pintos de 1 dia
+      averageWeight: 0.04,
       dailyFeedConsumption: feed,
       expectedSaleDate: fSaleDate || '',
       status: 'ATIVO',
@@ -68,20 +71,25 @@ export default function ProductionPage() {
     setShowModal(false);
   };
 
-  const inputClass = "w-full bg-[#f3f4f3] dark:bg-white/10 border border-[#edeeed] dark:border-white/10 rounded-xl px-4 py-3 text-[#012d1d] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#012d1d]/20";
+  const inputClass = "w-full bg-[#f3f4f3] dark:bg-white/10 border border-[#edeeed] dark:border-white/10 rounded-xl px-4 py-3 text-[#012d1d] dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#012d1d]/20 transition-all";
 
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setShowModal(false)} />
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
           <div className="relative bg-white dark:bg-[#1a2332] rounded-2xl p-6 sm:p-8 w-full max-w-lg shadow-2xl animate-fade-in-up max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-[#414844] dark:text-white/50 hover:text-red-500">
+            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 text-[#414844] dark:text-white/50 hover:text-red-500 transition-colors">
               <X className="w-5 h-5" />
             </button>
-            <h3 className="font-headline font-bold text-xl text-[#012d1d] dark:text-white mb-1">🐔 Novo Lote</h3>
-            <p className="text-sm text-[#414844] dark:text-white/50 mb-6">Registre um novo lote de produção</p>
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#012d1d] to-[#1b4332] rounded-xl flex items-center justify-center shadow-md">
+                <Bird className="w-5 h-5 text-white" />
+              </div>
+              <h3 className="font-headline font-bold text-xl text-[#012d1d] dark:text-white">Novo Lote</h3>
+            </div>
+            <p className="text-sm text-[#414844] dark:text-white/50 mb-6 ml-[52px]">Registre um novo lote de produção</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
@@ -130,7 +138,7 @@ export default function ProductionPage() {
               </div>
 
               <button type="submit"
-                className="w-full bg-gradient-to-r from-[#012d1d] to-[#1b4332] text-white font-bold py-3.5 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2">
+                className="w-full bg-gradient-to-r from-[#012d1d] to-[#1b4332] text-white font-bold py-3.5 rounded-xl hover:opacity-90 active:scale-[0.98] transition-all text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg">
                 <Plus className="w-4 h-4" /> Registrar Lote
               </button>
             </form>
@@ -148,37 +156,45 @@ export default function ProductionPage() {
           </p>
         </div>
         <button onClick={() => setShowModal(true)}
-          className="flex items-center gap-1.5 bg-gradient-to-r from-[#012d1d] to-[#1b4332] text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:opacity-90 active:scale-95 transition-all shadow-sm">
+          className="flex items-center gap-1.5 bg-gradient-to-r from-[#012d1d] to-[#1b4332] text-white px-4 py-2.5 rounded-lg text-sm font-bold hover:opacity-90 active:scale-95 transition-all shadow-md">
           <Plus className="w-4 h-4" /> Novo Lote
         </button>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5">
+        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5 hover:shadow-md hover:-translate-y-0.5 transition-all">
           <div className="flex items-center gap-2 mb-3">
-            <Egg className="w-4 h-4 text-[#7b5800]" />
+            <div className="w-8 h-8 rounded-lg bg-[#7b5800]/10 dark:bg-[#ffdea6]/10 flex items-center justify-center">
+              <Egg className="w-4 h-4 text-[#7b5800] dark:text-[#ffdea6]" />
+            </div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50">Lotes Ativos</p>
           </div>
           <p className="text-xl sm:text-2xl font-headline font-extrabold text-[#012d1d] dark:text-white">{activeFlocks.length}</p>
         </div>
-        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5">
+        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5 hover:shadow-md hover:-translate-y-0.5 transition-all">
           <div className="flex items-center gap-2 mb-3">
-            <Scale className="w-4 h-4 text-[#7b5800]" />
+            <div className="w-8 h-8 rounded-lg bg-[#7b5800]/10 dark:bg-[#ffdea6]/10 flex items-center justify-center">
+              <Scale className="w-4 h-4 text-[#7b5800] dark:text-[#ffdea6]" />
+            </div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50">Total de Aves</p>
           </div>
           <p className="text-xl sm:text-2xl font-headline font-extrabold text-[#012d1d] dark:text-white">{totalBirds.toLocaleString('pt-BR')}</p>
         </div>
-        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5">
+        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5 hover:shadow-md hover:-translate-y-0.5 transition-all">
           <div className="flex items-center gap-2 mb-3">
-            <Activity className="w-4 h-4 text-[#7b5800]" />
+            <div className="w-8 h-8 rounded-lg bg-[#7b5800]/10 dark:bg-[#ffdea6]/10 flex items-center justify-center">
+              <Activity className="w-4 h-4 text-[#7b5800] dark:text-[#ffdea6]" />
+            </div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50">Total de Lotes</p>
           </div>
           <p className="text-xl sm:text-2xl font-headline font-extrabold text-[#012d1d] dark:text-white">{flocks.length}</p>
         </div>
-        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5">
+        <div className="bg-white dark:bg-white/5 p-4 sm:p-5 rounded-xl shadow-sm border border-transparent dark:border-white/5 hover:shadow-md hover:-translate-y-0.5 transition-all">
           <div className="flex items-center gap-2 mb-3">
-            <Wheat className="w-4 h-4 text-[#7b5800]" />
+            <div className="w-8 h-8 rounded-lg bg-[#7b5800]/10 dark:bg-[#ffdea6]/10 flex items-center justify-center">
+              <Wheat className="w-4 h-4 text-[#7b5800] dark:text-[#ffdea6]" />
+            </div>
             <p className="text-[10px] font-bold uppercase tracking-wider text-[#414844] dark:text-white/50">Ração/Dia</p>
           </div>
           <p className="text-xl sm:text-2xl font-headline font-extrabold text-[#012d1d] dark:text-white">
@@ -190,7 +206,9 @@ export default function ProductionPage() {
       {/* Flock Cards */}
       {flocks.length === 0 ? (
         <div className="text-center py-16 bg-white dark:bg-white/5 rounded-2xl border border-dashed border-[#edeeed] dark:border-white/10">
-          <div className="text-5xl mb-4">🐓</div>
+          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#012d1d] to-[#1b4332] rounded-2xl flex items-center justify-center shadow-lg">
+            <Bird className="w-8 h-8 text-white" />
+          </div>
           <h3 className="text-[#012d1d] dark:text-white font-bold text-lg mb-1">Nenhum lote cadastrado</h3>
           <p className="text-[#414844] dark:text-white/50 text-sm">Clique em "Novo Lote" para registrar seu primeiro lote de produção.</p>
         </div>
@@ -206,7 +224,7 @@ export default function ProductionPage() {
               : <Clock className="w-4 h-4 text-amber-600" />;
 
             return (
-              <div key={flock.id} className="bg-white dark:bg-white/5 rounded-2xl shadow-sm overflow-hidden transition-all border border-transparent dark:border-white/5">
+              <div key={flock.id} className="bg-white dark:bg-white/5 rounded-2xl shadow-sm overflow-hidden transition-all border border-transparent dark:border-white/5 hover:shadow-md">
                 <button
                   onClick={() => setExpandedFlock(isExpanded ? null : flock.id)}
                   className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-5 hover:bg-gray-50/50 dark:hover:bg-white/5 transition-colors gap-3 sm:gap-0"
@@ -254,8 +272,9 @@ export default function ProductionPage() {
                       ))}
                     </div>
                     {flock.expectedSaleDate && (
-                      <p className="text-xs text-[#414844] dark:text-white/50">
-                        📅 Previsão de venda: <strong className="text-[#012d1d] dark:text-white">{formatDate(flock.expectedSaleDate)}</strong>
+                      <p className="text-xs text-[#414844] dark:text-white/50 flex items-center gap-1.5">
+                        <CalendarDays className="w-3.5 h-3.5 text-[#7b5800]" />
+                        Previsão de venda: <strong className="text-[#012d1d] dark:text-white">{formatDate(flock.expectedSaleDate)}</strong>
                       </p>
                     )}
                   </div>
